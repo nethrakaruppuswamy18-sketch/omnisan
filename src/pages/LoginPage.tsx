@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import axios from 'axios';
 import { motion } from 'motion/react';
@@ -8,12 +8,18 @@ import { useAuth } from '../context/AuthContext';
 const LoginPage = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const { login } = useAuth();
+  const { login, user: authUser } = useAuth();
   
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    if (authUser) {
+      navigate(`/${authUser.role}/dashboard`);
+    }
+  }, [authUser, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -21,13 +27,9 @@ const LoginPage = () => {
     setError('');
     
     try {
-      const response = await axios.post('/api/auth/login', { email, password });
-      login(response.data.token, response.data.user);
-      
-      const role = response.data.user.role;
-      navigate(`/${role}/dashboard`);
+      await login({ email, password });
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Login failed. Please check your credentials.');
+      setError(err.message || 'Login failed. Please check your credentials.');
     } finally {
       setIsSubmitting(false);
     }

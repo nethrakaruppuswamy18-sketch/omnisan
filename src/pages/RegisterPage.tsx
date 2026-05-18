@@ -9,7 +9,7 @@ import { UserRole } from '../types';
 const RegisterPage = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const { login } = useAuth();
+  const { register, user: authUser } = useAuth();
   
   const [formData, setFormData] = useState({
     name: '',
@@ -21,11 +21,10 @@ const RegisterPage = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
-    const roleParam = searchParams.get('role');
-    if (roleParam && Object.values(UserRole).includes(roleParam as UserRole)) {
-      setFormData(prev => ({ ...prev, role: roleParam as UserRole }));
+    if (authUser) {
+      navigate(`/${authUser.role}/dashboard`);
     }
-  }, [searchParams]);
+  }, [authUser, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -33,11 +32,9 @@ const RegisterPage = () => {
     setError('');
     
     try {
-      const response = await axios.post('/api/auth/register', formData);
-      login(response.data.token, response.data.user);
-      navigate(`/${response.data.user.role}/dashboard`);
+      await register(formData);
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Registration failed. Try a different email.');
+      setError(err.message || 'Registration failed. Try a different email.');
     } finally {
       setIsSubmitting(false);
     }

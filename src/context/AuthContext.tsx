@@ -1,12 +1,18 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import axios from 'axios';
-import { User, UserRole } from '../types';
+import { User } from '../types';
+import { dataService } from '../services/api';
+
+// Detect API URL for production vs development
+const API_URL = import.meta.env.VITE_API_URL || '';
+axios.defaults.baseURL = API_URL;
 
 interface AuthContextType {
   user: User | null;
   token: string | null;
   loading: boolean;
-  login: (token: string, user: User) => void;
+  login: (credentials: any) => Promise<void>;
+  register: (data: any) => Promise<void>;
   logout: () => void;
   isAuthenticated: boolean;
 }
@@ -23,8 +29,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       if (token) {
         try {
           axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-          const response = await axios.get('/api/auth/me');
-          setUser(response.data);
+          const userData = await dataService.getMe();
+          setUser(userData);
         } catch (error) {
           console.error('Auth check failed:', error);
           logout();
@@ -35,7 +41,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     initAuth();
   }, [token]);
 
-  const login = (newToken: string, newUser: User) => {
+  const login = async (credentials: any) => {
+    const { token: newToken, user: newUser } = await dataService.auth('login', credentials);
+    setToken(newToken);
+    setUser(newUser);
+    localStorage.setItem('token', newToken);
+    axios.defaults.headers.common['Authorization'] = `Bearer ${newToken}`;
+  };
+
+  const register = async (data: any) => {
+    const { token: newToken, user: newUser } = await dataService.auth('register', data);
     setToken(newToken);
     setUser(newUser);
     localStorage.setItem('token', newToken);
@@ -51,7 +66,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   return (
-    <AuthContext.Provider value={{ user, token, loading, login, logout, isAuthenticated: !!user }}>
+    <AuthContext.Provider value={{ user, token, loading, login, register, logout, isAuthenticated: !!user }}>
       {children}
     </AuthContext.Provider>
   );
