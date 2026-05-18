@@ -1,0 +1,8 @@
+{
+  "name": "OmniSanitas",
+  "description": "Smart Medication Management & Healthcare Dashboard",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

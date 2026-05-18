@@ -1,11 +1,32 @@
-<div align="center">
+# OMNISANITAS - Smart Medication Management
 
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
+OmniSanitas is a full-stack premium healthcare application designed to synchronize medication management across Doctors, Patients, and Caretakers.
 
-  <h1>Built with AI Studio</h2>
+## Key Features
+- **Role-Based Dashboards**: Customized experiences for Doctors, Patients, and Caretakers.
+- **Medication Tracker**: Daily schedule management with adherence tracking.
+- **Simulated AI Assistant**: Healthcare chatbot with symptom recognition and medical disclaimers.
+- **Pharmacy Finder**: Simulated locator for nearby medical stores with distance and contact info.
+- **Caretaker System**: Request-Approval workflow allowing caretakers to monitor patient medication status.
+- **Custom Auth**: Secure JWT-based authentication with Bcrypt password hashing.
 
-  <p>The fastest path from prompt to production with Gemini.</p>
+## Tech Stack
+- **Frontend**: React, Vite, TypeScript, Tailwind CSS, Framer Motion, Recharts.
+- **Backend**: Node.js, Express.js.
+- **Database**: Mock persistent JSON store (Mongoose-ready structure).
+- **Security**: JWT (JSON Web Tokens), Bcryptjs.
 
-  <a href="https://aistudio.google.com/apps">Start building</a>
+## Getting Started
+1. Install dependencies: `npm install`
+2. Run in development: `npm run dev`
+3. Build for production: `npm run build`
 
-</div>
+## Project Structure
+- `server.ts`: Express backend entry point with API logic.
+- `src/App.tsx`: Main React routing and layout.
+- `src/context/AuthContext.tsx`: Authentication state management.
+- `src/dashboards/`: Role-specific dashboard views.
+- `src/pages/`: Public pages (Landing, Login, Register).
+
+---
+*Disclaimer: This application is for demonstration purposes. AI responses are simulated and should not be used as professional medical advice.*
